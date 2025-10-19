@@ -3,11 +3,10 @@ package com.example.wakeupcallapp.sleepapp
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
+import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
@@ -15,80 +14,84 @@ import java.util.concurrent.TimeUnit
 
 class FitnessRepository(private val context: Context) {
 
-    companion object {
-        private const val TAG = "FitnessRepository"
+    private val TAG = "FitnessRepository"
+
+    // Build the FitnessOptions required to access steps & sleep data
+    fun getFitnessOptions(): FitnessOptions {
+        return FitnessOptions.builder()
+            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_SLEEP_SEGMENT, FitnessOptions.ACCESS_READ)
+            .build()
     }
 
-    private val fitnessOptions = FitnessOptions.builder()
-        .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-        .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-        .addDataType(DataType.TYPE_SLEEP_SEGMENT, FitnessOptions.ACCESS_READ)
-        .build()
-
+    // Check if Google Fit permissions are granted
     fun hasPermissions(): Boolean {
-        val account = getGoogleAccount()
-        return account != null && GoogleSignIn.hasPermissions(account, fitnessOptions)
-    }
-
-    fun getGoogleAccount(): GoogleSignInAccount? {
-        return GoogleSignIn.getAccountForExtension(context, fitnessOptions)
-    }
-
-    fun getFitnessOptions(): FitnessOptions = fitnessOptions
-
-    suspend fun getStepCount(
-        startDate: Calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -7) },
-        endDate: Calendar = Calendar.getInstance()
-    ): Int? {
         return try {
-            val account = getGoogleAccount() ?: run {
-                Log.e(TAG, "No Google account found")
-                return null
-            }
-
-            val readRequest = DataReadRequest.Builder()
-                .aggregate(DataType.AGGREGATE_STEP_COUNT_DELTA)
-                .bucketByTime(1, TimeUnit.DAYS)
-                .setTimeRange(startDate.timeInMillis, endDate.timeInMillis, TimeUnit.MILLISECONDS)
-                .build()
-
-            val response = Fitness.getHistoryClient(context, account)
-                .readData(readRequest)
-                .await()
-
-            var totalSteps = 0
-            for (bucket in response.buckets) {
-                for (dataSet in bucket.dataSets) {
-                    for (dataPoint in dataSet.dataPoints) {
-                        val steps = dataPoint.getValue(Field.FIELD_STEPS).asInt()
-                        totalSteps += steps
-                        Log.d(TAG, "Steps: $steps on ${dataPoint.getStartTime(TimeUnit.MILLISECONDS)}")
-                    }
-                }
-            }
-
-            Log.i(TAG, "Total steps: $totalSteps")
-            totalSteps
-
+            val account = GoogleSignIn.getAccountForExtension(context, getFitnessOptions())
+            val result = GoogleSignIn.hasPermissions(account, getFitnessOptions())
+            Log.d(TAG, "Google Fit permission check: $result")
+            result
         } catch (e: Exception) {
-            Log.e(TAG, "Error getting step count", e)
-            null
+            Log.e(TAG, "Error checking Fit permissions", e)
+            false
         }
     }
 
-    suspend fun getSleepDuration(
-        startDate: Calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -7) },
-        endDate: Calendar = Calendar.getInstance()
-    ): Double? {
-        return try {
-            val account = getGoogleAccount() ?: run {
-                Log.e(TAG, "No Google account found")
-                return null
+    // Get today's total step count
+    suspend fun getStepCount(startDate: Calendar): Int? {
+        try {
+            val endDate = Calendar.getInstance()
+            val account = GoogleSignIn.getAccountForExtension(context, getFitnessOptions())
+
+            Log.d(TAG, "Fetching step count from: ${startDate.time} → ${endDate.time}")
+
+            val response = Fitness.getHistoryClient(context, account)
+                .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
+                .await()
+
+            if (response.dataPoints.isNotEmpty()) {
+                val steps = response.dataPoints.first().getValue(
+                    DataType.TYPE_STEP_COUNT_DELTA.fields[0]
+                ).asInt()
+                Log.d(TAG, "Daily step count retrieved: $steps")
+                return steps
+            } else {
+                Log.w(TAG, "No step data available in Fit for the current day.")
             }
 
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Permission denied while accessing Google Fit (check ACTIVITY_RECOGNITION and location)", e)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error while fetching step count from Fit", e)
+        }
+        return null
+    }
+
+    // Average daily steps based on total steps
+    suspend fun getAverageDailySteps(days: Int): Int? {
+        val totalSteps = getStepCount(Calendar.getInstance())
+        return if (totalSteps != null && days > 0) {
+            totalSteps / days
+        } else null
+    }
+
+    // Get sleep duration (hours)
+    suspend fun getSleepDuration(startDate: Calendar): Double? {
+        try {
+            val endDate = Calendar.getInstance()
+            val account = GoogleSignIn.getAccountForExtension(context, getFitnessOptions())
+
+            Log.d(TAG, "Fetching sleep data from: ${startDate.time} → ${endDate.time}")
+
             val readRequest = DataReadRequest.Builder()
-                .read(DataType.TYPE_SLEEP_SEGMENT)
-                .setTimeRange(startDate.timeInMillis, endDate.timeInMillis, TimeUnit.MILLISECONDS)
+                .aggregate(DataType.TYPE_SLEEP_SEGMENT)
+                .bucketByTime(1, TimeUnit.DAYS)
+                .setTimeRange(
+                    startDate.timeInMillis,
+                    endDate.timeInMillis,
+                    TimeUnit.MILLISECONDS
+                )
                 .build()
 
             val response = Fitness.getHistoryClient(context, account)
@@ -96,42 +99,35 @@ class FitnessRepository(private val context: Context) {
                 .await()
 
             var totalSleepMillis = 0L
-            for (dataSet in response.dataSets) {
-                for (dataPoint in dataSet.dataPoints) {
-                    val sleepType = dataPoint.getValue(Field.FIELD_SLEEP_SEGMENT_TYPE).asInt()
-                    val start = dataPoint.getStartTime(TimeUnit.MILLISECONDS)
-                    val end = dataPoint.getEndTime(TimeUnit.MILLISECONDS)
-                    val duration = end - start
 
-                    if (sleepType in listOf(2, 4, 5, 6)) {
+            for (bucket in response.buckets) {
+                for (dataSet: DataSet in bucket.dataSets) {
+                    for (dp in dataSet.dataPoints) {
+                        val duration = dp.getEndTime(TimeUnit.MILLISECONDS) -
+                                dp.getStartTime(TimeUnit.MILLISECONDS)
                         totalSleepMillis += duration
                     }
                 }
             }
 
-            val totalSleepHours = totalSleepMillis / 1000.0 / 60.0 / 60.0
-            Log.i(TAG, "Total sleep: $totalSleepHours hours")
-            totalSleepHours
+            if (totalSleepMillis > 0) {
+                val totalSleepHours = totalSleepMillis.toDouble() / (1000 * 60 * 60)
+                Log.d(TAG, "Sleep data retrieved: $totalSleepHours hours total.")
+                return totalSleepHours
+            } else {
+                Log.w(TAG, "No sleep data found in Google Fit.")
+            }
 
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Permission denied while accessing sleep data.", e)
         } catch (e: Exception) {
-            Log.e(TAG, "Error getting sleep duration", e)
-            null
+            Log.e(TAG, "Error fetching sleep data from Fit", e)
         }
+        return null
     }
 
-    suspend fun getAverageDailySteps(days: Int = 7): Int? {
-        val startDate = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_YEAR, -days)
-        }
-        val totalSteps = getStepCount(startDate) ?: return null
-        return totalSteps / days
-    }
-
-    suspend fun getAverageSleepDuration(days: Int = 7): Double? {
-        val startDate = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_YEAR, -days)
-        }
-        val totalSleep = getSleepDuration(startDate) ?: return null
-        return totalSleep / days
+    suspend fun getAverageSleepDuration(days: Int): Double? {
+        val total = getSleepDuration(Calendar.getInstance())
+        return if (total != null && days > 0) total / days else null
     }
 }

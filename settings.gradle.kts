@@ -1,12 +1,6 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google() // Keep this simple to include all Google artifacts
         mavenCentral()
         gradlePluginPortal()
     }
@@ -14,8 +8,10 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
+        google() // Keep this simple
         mavenCentral()
+        // Some libraries might still be on jcenter, though it's deprecated
+        // jcenter()
     }
 }
 
