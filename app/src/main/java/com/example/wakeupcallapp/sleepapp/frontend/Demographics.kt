@@ -1,0 +1,317 @@
+package com.example.wakeupcallapp.sleepapp
+
+import android.os.Bundle
+import com.example.wakeupcallapp.sleepapp.R
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+class Demographics : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            DemographicsScreenContent()
+        }
+    }
+}
+
+@Composable
+fun DemographicsScreenContent() {
+    var age by remember { mutableStateOf("") }
+    var selectedSex by remember { mutableStateOf("") }
+    var height by remember { mutableStateOf("") }
+    var weight by remember { mutableStateOf("") }
+    var neckCircumference by remember { mutableStateOf("") }
+
+    // Calculate BMI
+    val bmi = remember(height, weight) {
+        try {
+            val h = height.toDoubleOrNull() ?: 0.0
+            val w = weight.toDoubleOrNull() ?: 0.0
+            if (h > 0 && w > 0) {
+                val heightInMeters = h / 100
+                String.format("%.1f", w / (heightInMeters * heightInMeters))
+            } else {
+                "--"
+            }
+        } catch (e: Exception) {
+            "--"
+        }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Background Image
+        Image(
+            painter = painterResource(id = R.drawable.background),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        // Scrollable content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // Card container
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0x50FFFFFF)
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                ) {
+                    // Title
+                    Text(
+                        text = "Demographics",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Age field
+                    Text(
+                        text = "What is your age?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CustomTextField(
+                        value = age,
+                        onValueChange = { age = it },
+                        placeholder = "",
+                        keyboardType = KeyboardType.Number
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Sex selection
+                    Text(
+                        text = "What is your sex?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    RadioButtonOption(
+                        text = "Female",
+                        selected = selectedSex == "Female",
+                        onClick = { selectedSex = "Female" }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    RadioButtonOption(
+                        text = "Male",
+                        selected = selectedSex == "Male",
+                        onClick = { selectedSex = "Male" }
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Height field
+                    Text(
+                        text = "What is your height (cm)?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CustomTextField(
+                        value = height,
+                        onValueChange = { height = it },
+                        placeholder = "",
+                        keyboardType = KeyboardType.Number
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Weight field
+                    Text(
+                        text = "What is your weight (kg)?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CustomTextField(
+                        value = weight,
+                        onValueChange = { weight = it },
+                        placeholder = "",
+                        keyboardType = KeyboardType.Number
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // BMI Display
+                    Text(
+                        text = "Your BMI:   $bmi",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Neck circumference field
+                    Text(
+                        text = "What is your neck-circumference (cm)?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CustomTextField(
+                        value = neckCircumference,
+                        onValueChange = { neckCircumference = it },
+                        placeholder = "",
+                        keyboardType = KeyboardType.Number
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(80.dp))
+        }
+
+        // Floating logo at bottom right
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(24.dp)
+                .size(60.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    keyboardType: KeyboardType = KeyboardType.Text
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = placeholder,
+                color = Color(0x80FFFFFF)
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = Color(0x40FFFFFF),
+            unfocusedContainerColor = Color(0x40FFFFFF),
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent,
+            cursorColor = Color.White
+        ),
+        shape = RoundedCornerShape(12.dp),
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        singleLine = true
+    )
+}
+
+@Composable
+fun RadioButtonOption(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .background(
+                    color = if (selected) Color.White else Color.Transparent,
+                    shape = CircleShape
+                )
+                .border(
+                    width = 2.dp,
+                    color = Color.White,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (selected) {
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .background(
+                            color = Color(0xFF6B8DD6),
+                            shape = CircleShape
+                        )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Text(
+            text = text,
+            fontSize = 16.sp,
+            color = Color.White,
+            fontWeight = FontWeight.Normal
+        )
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewDemographicsScreen() {
+    DemographicsScreenContent()
+}
