@@ -1,7 +1,6 @@
 package com.example.wakeupcallapp.sleepapp
 
 import android.os.Bundle
-import com.example.wakeupcallapp.sleepapp.R
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.wakeupcallapp.sleepapp.R
 
 class Demographics : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,8 +83,7 @@ fun DemographicsScreenContent() {
 
             // Card container
             Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color(0x50FFFFFF)
@@ -203,25 +202,35 @@ fun DemographicsScreenContent() {
                         placeholder = "",
                         keyboardType = KeyboardType.Number
                     )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Next button inside card (bottom right)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        IconButton(
+                            onClick = { /* Handle next navigation */ },
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    color = Color(0x40FFFFFF),
+                                    shape = CircleShape
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(android.R.drawable.ic_media_play),
+                                contentDescription = "Next",
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(80.dp))
-        }
-
-        // Floating logo at bottom right
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp)
-                .size(60.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
-            )
         }
     }
 }

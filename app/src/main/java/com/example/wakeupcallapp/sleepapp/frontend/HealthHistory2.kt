@@ -19,10 +19,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,9 +45,7 @@ fun HealthHistory2ScreenContent() {
     var activityType2 by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
             painter = painterResource(id = R.drawable.background),
@@ -56,7 +54,7 @@ fun HealthHistory2ScreenContent() {
             contentScale = ContentScale.Crop
         )
 
-        // Scrollable content
+        // Scrollable Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,16 +62,13 @@ fun HealthHistory2ScreenContent() {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(40.dp)) // slightly higher start for balance
 
-            // Card container
+            // Card Container
             Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0x50FFFFFF)
-                )
+                colors = CardDefaults.cardColors(containerColor = Color(0x50FFFFFF))
             ) {
                 Column(
                     modifier = Modifier
@@ -90,7 +85,7 @@ fun HealthHistory2ScreenContent() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Step count field
+                    // Step Count Field
                     Text(
                         text = "Typical daily step-count:",
                         fontSize = 16.sp,
@@ -107,9 +102,9 @@ fun HealthHistory2ScreenContent() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Activity minutes field
+                    // Activity Minutes Field
                     Text(
-                        text = "Daily physical activity minutes):",
+                        text = "Daily physical activity (minutes):",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
@@ -124,7 +119,7 @@ fun HealthHistory2ScreenContent() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Types of physical activity
+                    // Types of Physical Activity
                     Text(
                         text = "Types of physical activity:",
                         fontSize = 16.sp,
@@ -148,7 +143,7 @@ fun HealthHistory2ScreenContent() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Time of day question
+                    // Time of Day Question
                     Text(
                         text = "At what time of day do you usually perform your physical activities?",
                         fontSize = 16.sp,
@@ -158,61 +153,68 @@ fun HealthHistory2ScreenContent() {
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    TimeRadioButtonOption(
-                        text = "Morning (6 AM - 10 AM)",
-                        selected = selectedTime == "Morning",
-                        onClick = { selectedTime = "Morning" }
-                    )
+                    TimeRadioButtonOption("Morning (6 AM - 10 AM)", selectedTime == "Morning") { selectedTime = "Morning" }
                     Spacer(modifier = Modifier.height(8.dp))
-                    TimeRadioButtonOption(
-                        text = "Afternoon (11 AM - 4 PM)",
-                        selected = selectedTime == "Afternoon",
-                        onClick = { selectedTime = "Afternoon" }
-                    )
+                    TimeRadioButtonOption("Afternoon (11 AM - 4 PM)", selectedTime == "Afternoon") { selectedTime = "Afternoon" }
                     Spacer(modifier = Modifier.height(8.dp))
-                    TimeRadioButtonOption(
-                        text = "Evening (5 PM - 9 PM)",
-                        selected = selectedTime == "Evening",
-                        onClick = { selectedTime = "Evening" }
-                    )
+                    TimeRadioButtonOption("Evening (5 PM - 9 PM)", selectedTime == "Evening") { selectedTime = "Evening" }
                     Spacer(modifier = Modifier.height(8.dp))
-                    TimeRadioButtonOption(
-                        text = "Late Night (10 PM - 12 AM)",
-                        selected = selectedTime == "Late Night",
-                        onClick = { selectedTime = "Late Night" }
-                    )
+                    TimeRadioButtonOption("Late Night (10 PM - 12 AM)", selectedTime == "Late Night") { selectedTime = "Late Night" }
                     Spacer(modifier = Modifier.height(8.dp))
-                    TimeRadioButtonOption(
-                        text = "I don't have a fixed time",
-                        selected = selectedTime == "No fixed time",
-                        onClick = { selectedTime = "No fixed time" }
-                    )
+                    TimeRadioButtonOption("I don't have a fixed time", selectedTime == "No fixed time") { selectedTime = "No fixed time" }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Navigation Buttons (inside card, properly aligned)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp), // adds breathing room from bottom
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Back Button
+                        IconButton(
+                            onClick = { /* Handle back navigation */ },
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    color = Color(0x40FFFFFF),
+                                    shape = CircleShape
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(android.R.drawable.ic_media_play),
+                                contentDescription = "Back",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .graphicsLayer(rotationZ = 180f)
+                            )
+                        }
+
+                        // Next Button
+                        IconButton(
+                            onClick = { /* Handle next navigation */ },
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    color = Color(0x40FFFFFF),
+                                    shape = CircleShape
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(android.R.drawable.ic_media_play),
+                                contentDescription = "Next",
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
-        }
-
-        // Back button at bottom left
-        IconButton(
-            onClick = { /* Handle back navigation */ },
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(24.dp)
-                .size(48.dp)
-                .background(
-                    color = Color(0x40FFFFFF),
-                    shape = CircleShape
-                )
-        ) {
-            Icon(
-                painter = painterResource(android.R.drawable.ic_media_play),
-                contentDescription = "Back",
-                tint = Color.White,
-                modifier = Modifier
-                    .size(20.dp)
-                    .graphicsLayer(rotationZ = 180f)
-            )
+            Spacer(modifier = Modifier.height(60.dp)) // balanced bottom space
         }
     }
 }
@@ -231,10 +233,7 @@ fun HealthTextField(
             .fillMaxWidth()
             .height(56.dp),
         placeholder = {
-            Text(
-                text = placeholder,
-                color = Color(0x80FFFFFF)
-            )
+            Text(text = placeholder, color = Color(0x80FFFFFF))
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = Color(0x40FFFFFF),
@@ -271,21 +270,14 @@ fun TimeRadioButtonOption(
                     color = if (selected) Color.White else Color.Transparent,
                     shape = CircleShape
                 )
-                .border(
-                    width = 2.dp,
-                    color = Color.White,
-                    shape = CircleShape
-                ),
+                .border(2.dp, Color.White, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             if (selected) {
                 Box(
                     modifier = Modifier
                         .size(12.dp)
-                        .background(
-                            color = Color(0xFF6B8DD6),
-                            shape = CircleShape
-                        )
+                        .background(Color(0xFF6B8DD6), CircleShape)
                 )
             }
         }

@@ -26,26 +26,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-class HealthHistory : ComponentActivity() {
+class SleepHabits2 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HealthHistoryScreenContent()
+            SleepHabits2ScreenContent()
         }
     }
 }
 
 @Composable
-fun HealthHistoryScreenContent() {
-    var hypertension by remember { mutableStateOf("") }
-    var diabetes by remember { mutableStateOf("") }
-    var smoking by remember { mutableStateOf("") }
-    var alcohol by remember { mutableStateOf("") }
+fun SleepHabits2ScreenContent() {
+    var snoreFrequency by remember { mutableStateOf("") }
+    var botheredOthers by remember { mutableStateOf("") }
+    var breathingQuit by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Background Image
+        // Background image
         Image(
             painter = painterResource(id = R.drawable.background),
             contentDescription = "Background",
@@ -61,15 +60,13 @@ fun HealthHistoryScreenContent() {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(48.dp)) // Moved slightly upward (more top space)
+            Spacer(modifier = Modifier.height(40.dp))
 
             // Card container
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0x50FFFFFF)
-                )
+                colors = CardDefaults.cardColors(containerColor = Color(0x50FFFFFF))
             ) {
                 Column(
                     modifier = Modifier
@@ -78,7 +75,7 @@ fun HealthHistoryScreenContent() {
                 ) {
                     // Title
                     Text(
-                        text = "Health & Lifestyle",
+                        text = "Sleep Habits & Behavior",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -86,69 +83,85 @@ fun HealthHistoryScreenContent() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Question 1: Hypertension
+                    // Question 1
                     Text(
-                        text = "Have you been diagnosed with high blood pressure (hypertension)?",
+                        text = "How often do you snore?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    listOf(
+                        "Nearly every day",
+                        "3–4 times a week",
+                        "1–2 times a week",
+                        "1–2 times a month",
+                        "Never or nearly never"
+                    ).forEach { option ->
+                        Snore2RadioButtonOption(
+                            text = option,
+                            selected = snoreFrequency == option,
+                            onClick = { snoreFrequency = option }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Question 2
+                    Text(
+                        text = "Has your snoring ever bothered other people?",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,
                         lineHeight = 22.sp
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", hypertension == "Yes") { hypertension = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", hypertension == "No") { hypertension = "No" }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    listOf("Yes", "No").forEach { option ->
+                        Snore2RadioButtonOption(
+                            text = option,
+                            selected = botheredOthers == option,
+                            onClick = { botheredOthers = option }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
-                    // Question 2: Diabetes
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Question 3
                     Text(
-                        text = "Have you been diagnosed with Diabetes?",
+                        text = "Has anyone observed that you quit breathing during your sleep?",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,
                         lineHeight = 22.sp
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", diabetes == "Yes") { diabetes = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", diabetes == "No") { diabetes = "No" }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    listOf(
+                        "Nearly every day",
+                        "3–4 times a week",
+                        "1–2 times a week",
+                        "1–2 times a month",
+                        "Never or nearly never"
+                    ).forEach { option ->
+                        Snore2RadioButtonOption(
+                            text = option,
+                            selected = breathingQuit == option,
+                            onClick = { breathingQuit = option }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
-                    // Question 3: Smoking
-                    Text(
-                        text = "Do you smoke?",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", smoking == "Yes") { smoking = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", smoking == "No") { smoking = "No" }
+                    Spacer(modifier = Modifier.height(36.dp))
 
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Question 4: Alcohol
-                    Text(
-                        text = "Do you drink alcohol?",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", alcohol == "Yes") { alcohol = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", alcohol == "No") { alcohol = "No" }
-
-                    Spacer(modifier = Modifier.height(36.dp)) // same as other screens
-
-                    // Navigation buttons row (inside the card)
+                    // Navigation buttons (inside card, slightly upward)
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -193,13 +206,13 @@ fun HealthHistoryScreenContent() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp)) // Reduced bottom space for balance
+            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 }
 
 @Composable
-fun HealthRadioButtonOption(
+fun Snore2RadioButtonOption(
     text: String,
     selected: Boolean,
     onClick: () -> Unit
@@ -218,14 +231,21 @@ fun HealthRadioButtonOption(
                     color = if (selected) Color.White else Color.Transparent,
                     shape = CircleShape
                 )
-                .border(2.dp, Color.White, CircleShape),
+                .border(
+                    width = 2.dp,
+                    color = Color.White,
+                    shape = CircleShape
+                ),
             contentAlignment = Alignment.Center
         ) {
             if (selected) {
                 Box(
                     modifier = Modifier
                         .size(12.dp)
-                        .background(Color(0xFF6B8DD6), CircleShape)
+                        .background(
+                            color = Color(0xFF6B8DD6),
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -243,6 +263,6 @@ fun HealthRadioButtonOption(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewHealthHistoryScreen() {
-    HealthHistoryScreenContent()
+fun PreviewSleepHabits2Screen() {
+    SleepHabits2ScreenContent()
 }

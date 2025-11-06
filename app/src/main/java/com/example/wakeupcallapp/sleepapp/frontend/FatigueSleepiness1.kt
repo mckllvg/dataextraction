@@ -26,21 +26,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-class HealthHistory : ComponentActivity() {
+class FatigueSleepiness1 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HealthHistoryScreenContent()
+            FatigueSleepiness1ScreenContent()
         }
     }
 }
 
 @Composable
-fun HealthHistoryScreenContent() {
-    var hypertension by remember { mutableStateOf("") }
-    var diabetes by remember { mutableStateOf("") }
-    var smoking by remember { mutableStateOf("") }
-    var alcohol by remember { mutableStateOf("") }
+fun FatigueSleepiness1ScreenContent() {
+    var tiredDuringDay by remember { mutableStateOf("") }
+    var tiredAfterSleep by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -61,9 +59,9 @@ fun HealthHistoryScreenContent() {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(48.dp)) // Moved slightly upward (more top space)
+            Spacer(modifier = Modifier.height(40.dp))
 
-            // Card container
+            // Card container (consistent size)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -78,7 +76,7 @@ fun HealthHistoryScreenContent() {
                 ) {
                     // Title
                     Text(
-                        text = "Health & Lifestyle",
+                        text = "Fatigue & Sleepiness",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -86,65 +84,91 @@ fun HealthHistoryScreenContent() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Question 1: Hypertension
+                    // Question 1
                     Text(
-                        text = "Have you been diagnosed with high blood pressure (hypertension)?",
+                        text = "During your wake time, do you feel tired, fatigued, or not up to par?",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,
                         lineHeight = 22.sp
                     )
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", hypertension == "Yes") { hypertension = "Yes" }
+
+                    FatigueRadioButtonOption(
+                        text = "Nearly every day",
+                        selected = tiredDuringDay == "Nearly every day",
+                        onClick = { tiredDuringDay = "Nearly every day" }
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", hypertension == "No") { hypertension = "No" }
+                    FatigueRadioButtonOption(
+                        text = "3-4 times a week",
+                        selected = tiredDuringDay == "3-4 times a week",
+                        onClick = { tiredDuringDay = "3-4 times a week" }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FatigueRadioButtonOption(
+                        text = "1-2 times a week",
+                        selected = tiredDuringDay == "1-2 times a week",
+                        onClick = { tiredDuringDay = "1-2 times a week" }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FatigueRadioButtonOption(
+                        text = "1-2 times a month",
+                        selected = tiredDuringDay == "1-2 times a month",
+                        onClick = { tiredDuringDay = "1-2 times a month" }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FatigueRadioButtonOption(
+                        text = "Never or nearly never",
+                        selected = tiredDuringDay == "Never or nearly never",
+                        onClick = { tiredDuringDay = "Never or nearly never" }
+                    )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Question 2: Diabetes
+                    // Question 2
                     Text(
-                        text = "Have you been diagnosed with Diabetes?",
+                        text = "How often do you feel tired or fatigued after your sleep?",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,
                         lineHeight = 22.sp
                     )
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", diabetes == "Yes") { diabetes = "Yes" }
+
+                    FatigueRadioButtonOption(
+                        text = "Nearly every day",
+                        selected = tiredAfterSleep == "Nearly every day",
+                        onClick = { tiredAfterSleep = "Nearly every day" }
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", diabetes == "No") { diabetes = "No" }
+                    FatigueRadioButtonOption(
+                        text = "3-4 times a week",
+                        selected = tiredAfterSleep == "3-4 times a week",
+                        onClick = { tiredAfterSleep = "3-4 times a week" }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FatigueRadioButtonOption(
+                        text = "1-2 times a week",
+                        selected = tiredAfterSleep == "1-2 times a week",
+                        onClick = { tiredAfterSleep = "1-2 times a week" }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FatigueRadioButtonOption(
+                        text = "1-2 times a month",
+                        selected = tiredAfterSleep == "1-2 times a month",
+                        onClick = { tiredAfterSleep = "1-2 times a month" }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FatigueRadioButtonOption(
+                        text = "Never or nearly never",
+                        selected = tiredAfterSleep == "Never or nearly never",
+                        onClick = { tiredAfterSleep = "Never or nearly never" }
+                    )
 
                     Spacer(modifier = Modifier.height(32.dp))
-
-                    // Question 3: Smoking
-                    Text(
-                        text = "Do you smoke?",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", smoking == "Yes") { smoking = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", smoking == "No") { smoking = "No" }
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Question 4: Alcohol
-                    Text(
-                        text = "Do you drink alcohol?",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", alcohol == "Yes") { alcohol = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", alcohol == "No") { alcohol = "No" }
-
-                    Spacer(modifier = Modifier.height(36.dp)) // same as other screens
 
                     // Navigation buttons row (inside the card)
                     Row(
@@ -193,13 +217,13 @@ fun HealthHistoryScreenContent() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp)) // Reduced bottom space for balance
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
 
 @Composable
-fun HealthRadioButtonOption(
+fun FatigueRadioButtonOption(
     text: String,
     selected: Boolean,
     onClick: () -> Unit
@@ -218,14 +242,21 @@ fun HealthRadioButtonOption(
                     color = if (selected) Color.White else Color.Transparent,
                     shape = CircleShape
                 )
-                .border(2.dp, Color.White, CircleShape),
+                .border(
+                    width = 2.dp,
+                    color = Color.White,
+                    shape = CircleShape
+                ),
             contentAlignment = Alignment.Center
         ) {
             if (selected) {
                 Box(
                     modifier = Modifier
                         .size(12.dp)
-                        .background(Color(0xFF6B8DD6), CircleShape)
+                        .background(
+                            color = Color(0xFF6B8DD6),
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -243,6 +274,6 @@ fun HealthRadioButtonOption(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewHealthHistoryScreen() {
-    HealthHistoryScreenContent()
+fun PreviewFatigueSleepiness1Screen() {
+    FatigueSleepiness1ScreenContent()
 }

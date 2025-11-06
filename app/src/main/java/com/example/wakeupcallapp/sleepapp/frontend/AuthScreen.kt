@@ -65,21 +65,22 @@ fun AuthScreenContent() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 32.dp)
+                .padding(top = 40.dp), // 👈 shifts everything slightly downward
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             // Logo with floating animation
             Box(
                 modifier = Modifier
-                    .size(280.dp)
+                    .size(300.dp)
                     .offset(y = floatingOffset.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
-                    modifier = Modifier.size(200.dp),
+                    modifier = Modifier.size(250.dp),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -178,7 +179,7 @@ fun AuthScreenContent() {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Page indicators at bottom
+        // Page indicators at bottom
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

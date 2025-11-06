@@ -26,25 +26,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-class HealthHistory : ComponentActivity() {
+class FatigueSleepiness3 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HealthHistoryScreenContent()
+            FatigueSleepiness3ScreenContent()
         }
     }
 }
 
 @Composable
-fun HealthHistoryScreenContent() {
-    var hypertension by remember { mutableStateOf("") }
-    var diabetes by remember { mutableStateOf("") }
-    var smoking by remember { mutableStateOf("") }
-    var alcohol by remember { mutableStateOf("") }
+fun FatigueSleepiness3ScreenContent() {
+    var watchingTv by remember { mutableStateOf("") }
+    var sittingPublic by remember { mutableStateOf("") }
+    var sittingPassenger by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
             painter = painterResource(id = R.drawable.background),
@@ -61,7 +58,7 @@ fun HealthHistoryScreenContent() {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(48.dp)) // Moved slightly upward (more top space)
+            Spacer(modifier = Modifier.height(40.dp))
 
             // Card container
             Card(
@@ -78,7 +75,7 @@ fun HealthHistoryScreenContent() {
                 ) {
                     // Title
                     Text(
-                        text = "Health & Lifestyle",
+                        text = "Fatigue & Sleepiness",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -86,67 +83,61 @@ fun HealthHistoryScreenContent() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Question 1: Hypertension
+                    // Question 1
                     Text(
-                        text = "Have you been diagnosed with high blood pressure (hypertension)?",
+                        text = "Watching television",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", hypertension == "Yes") { hypertension = "Yes" }
+                    Fatigue3RadioOption("No chance of dozing", watchingTv) { watchingTv = it }
                     Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", hypertension == "No") { hypertension = "No" }
+                    Fatigue3RadioOption("Slight chance of dozing", watchingTv) { watchingTv = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("Moderate chance of dozing", watchingTv) { watchingTv = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("High chance of dozing", watchingTv) { watchingTv = it }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Question 2
+                    Text(
+                        text = "Sitting inactive in a public place",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Fatigue3RadioOption("No chance of dozing", sittingPublic) { sittingPublic = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("Slight chance of dozing", sittingPublic) { sittingPublic = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("Moderate chance of dozing", sittingPublic) { sittingPublic = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("High chance of dozing", sittingPublic) { sittingPublic = it }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Question 3
+                    Text(
+                        text = "Sitting for an hour as a passenger in a car",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Fatigue3RadioOption("No chance of dozing", sittingPassenger) { sittingPassenger = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("Slight chance of dozing", sittingPassenger) { sittingPassenger = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("Moderate chance of dozing", sittingPassenger) { sittingPassenger = it }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Fatigue3RadioOption("High chance of dozing", sittingPassenger) { sittingPassenger = it }
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Question 2: Diabetes
-                    Text(
-                        text = "Have you been diagnosed with Diabetes?",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", diabetes == "Yes") { diabetes = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", diabetes == "No") { diabetes = "No" }
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Question 3: Smoking
-                    Text(
-                        text = "Do you smoke?",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", smoking == "Yes") { smoking = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", smoking == "No") { smoking = "No" }
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Question 4: Alcohol
-                    Text(
-                        text = "Do you drink alcohol?",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HealthRadioButtonOption("Yes", alcohol == "Yes") { alcohol = "Yes" }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HealthRadioButtonOption("No", alcohol == "No") { alcohol = "No" }
-
-                    Spacer(modifier = Modifier.height(36.dp)) // same as other screens
-
-                    // Navigation buttons row (inside the card)
+                    // Navigation buttons
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -186,28 +177,31 @@ fun HealthHistoryScreenContent() {
                                 painter = painterResource(android.R.drawable.ic_media_play),
                                 contentDescription = "Next",
                                 tint = Color.White,
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .graphicsLayer(rotationZ = 0f)
                             )
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp)) // Reduced bottom space for balance
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
 
 @Composable
-fun HealthRadioButtonOption(
+fun Fatigue3RadioOption(
     text: String,
-    selected: Boolean,
-    onClick: () -> Unit
+    selectedValue: String,
+    onSelect: (String) -> Unit
 ) {
+    val selected = selectedValue == text
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable { onSelect(text) }
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -243,6 +237,6 @@ fun HealthRadioButtonOption(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewHealthHistoryScreen() {
-    HealthHistoryScreenContent()
+fun PreviewFatigueSleepiness3Screen() {
+    FatigueSleepiness3ScreenContent()
 }
