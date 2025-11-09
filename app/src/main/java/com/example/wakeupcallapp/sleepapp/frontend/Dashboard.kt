@@ -10,7 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +27,9 @@ import com.example.wakeupcallapp.sleepapp.R
 
 @Composable
 fun DashboardScreen(navController: NavController) {
+    // Check if user has completed questionnaire (you can replace this with actual state management)
+    var hasCompletedQuestionnaire by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
